@@ -8,8 +8,17 @@
   <script src="./wasm_exec.js"></script>
 </head>
 <body>
+  <script src="./index.js"></script>
   <script>
-    // [1,2,3,5,8,13]
+    function testTime(title, time, cb) {
+      let sum = 0;
+      for (let i = 0; i < time; i++) {
+        let start = performance.now()
+        cb();
+        sum += performance.now() - start;
+      }
+      console.debug(`${title}，${time}次平均耗时${sum/time}毫秒`);
+    }
 
     const go = new Go();
     WebAssembly.instantiateStreaming(fetch("./main.wasm"), go.importObject)
@@ -21,26 +30,37 @@
       })
 
     function main() {
-      const time = 70;
-      console.time('js-fib-test');
-      console.debug(fib(time));
-      console.timeEnd('js-fib-test');
+      const times = [10, 20, 30];
+      const size = 30;
+      for (const time of times) {
+        testTime('js迭代', time, () => {
+          return fib(size)
+        })
 
-      console.time('go-fib-test');
-      console.debug(goFib(time));
-      console.timeEnd('go-fib-test');
-    }
-
-    function fib(max) {
-      const slice = [1,2]
-      if (max < 3) {
-        return slice[max - 1]
+        testTime('go迭代', time, () => {
+          return goFib(size)
+        })
+        console.debug('')
       }
-      for (let i = 2; i < max; i++) {
-        [slice[0], slice[1]] = [slice[1], slice[0]+ slice[1]]
-      }
+      for (const time of times) {
+        testTime('js递归', time, () => {
+          return fib2(size)
+        })
 
-	    return slice[1];
+        testTime('go递归', time, () => {
+          return goFib2(size)
+        })
+        console.debug('')
+      }
+      console.debug('结束')
+
+      let start = performance.now()
+      goFib3(size)
+      console.debug('go内部递归30次平均耗时', (performance.now() - start)/30)
+    
+      start = performance.now()
+      fib3(size)
+      console.debug('js内部递归30次平均耗时', (performance.now() - start)/30)
     }
   </script>
 </body>
