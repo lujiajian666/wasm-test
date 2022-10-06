@@ -1,5 +1,5 @@
 function fib(max) {
-  const slice = [1,2]
+  const slice = [1,1]
   if (max < 3) {
     return slice[max - 1]
   }
@@ -19,4 +19,7 @@ function fib3(max) {
     fib2(max)
   }
   return 'end'
+}
+function genGar(max) {
+	return Array(max).fill(null)
 }

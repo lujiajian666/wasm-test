@@ -6,9 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>web assembly</title>
   <script src="./wasm_exec.js"></script>
+  <script src="./index.js"></script>
 </head>
 <body>
-  <script src="./index.js"></script>
   <script>
     function testTime(title, time, cb) {
       let sum = 0;
@@ -61,6 +61,27 @@
       start = performance.now()
       fib3(size)
       console.debug('js内部递归30次平均耗时', (performance.now() - start)/30)
+
+      const len = 100000;
+      const time = 1000;
+      // jsGar(time, len);
+      goGar(time, len);
+    }
+    function jsGar(time, len){
+      let list;
+      for(let i = 0; i < time; i++) {
+        list = genGar(len);
+      }
+      console.debug(list)
+      console.debug(window.performance.memory)
+    }
+    function goGar(time, len) {
+      let list;
+      for(let i = 0; i < time; i++) {
+        list = goGenGar(len);
+      }
+      console.debug(list)
+      console.debug(window.performance.memory)
     }
   </script>
 </body>
