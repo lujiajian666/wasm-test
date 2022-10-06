@@ -10,16 +10,6 @@
 </head>
 <body>
   <script>
-    function testTime(title, time, cb) {
-      let sum = 0;
-      for (let i = 0; i < time; i++) {
-        let start = performance.now()
-        cb();
-        sum += performance.now() - start;
-      }
-      console.debug(`${title}，${time}次平均耗时${sum/time}毫秒`);
-    }
-
     const go = new Go();
     WebAssembly.instantiateStreaming(fetch("./main.wasm"), go.importObject)
       .then((result) => {
@@ -63,25 +53,20 @@
       console.debug('js内部递归30次平均耗时', (performance.now() - start)/30)
 
       const len = 100000;
-      const time = 1000;
-      // jsGar(time, len);
-      goGar(time, len);
-    }
-    function jsGar(time, len){
-      let list;
-      for(let i = 0; i < time; i++) {
-        list = genGar(len);
-      }
+      const time = 2000;
+      // list = genGar(time, len)
+      list = goGenGar(time, len);
       console.debug(list)
       console.debug(window.performance.memory)
     }
-    function goGar(time, len) {
-      let list;
-      for(let i = 0; i < time; i++) {
-        list = goGenGar(len);
+    function testTime(title, time, cb) {
+      let sum = 0;
+      for (let i = 0; i < time; i++) {
+        let start = performance.now()
+        cb();
+        sum += performance.now() - start;
       }
-      console.debug(list)
-      console.debug(window.performance.memory)
+      console.debug(`${title}，${time}次平均耗时${sum/time}毫秒`);
     }
   </script>
 </body>

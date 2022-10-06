@@ -33,9 +33,15 @@ func fib3wrapper(this js.Value, args []js.Value) any {
 	}
 	return "end"
 }
+
 func generateGarbage(this js.Value, args []js.Value) any {
-	len := args[0].Int();
-	return make([]interface{}, len)
+	time := args[0].Int();
+	len := args[1].Int();
+	var list []interface{}
+	for i := 0; i < time; i++ {
+		list = make([]interface{}, len)
+	}
+	return list
 }
 
 func main() {

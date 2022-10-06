@@ -20,6 +20,22 @@ function fib3(max) {
   }
   return 'end'
 }
-function genGar(max) {
-	return Array(max).fill(null)
+
+function genGar(time, len) {
+  let list
+  for(let i = 0; i < time; i++) {
+    list = Array(len).fill(null)
+  }
+  return list
 }
+// 泄漏
+// function genGar() {
+//   let list = Array(1000000).fill(null)
+//   function closesure() {
+//     list = Array(1).fill(null)
+//   }
+//   function getList(len) {
+//     return Array(len).fill(null)
+//   }
+//   return getList
+// }
