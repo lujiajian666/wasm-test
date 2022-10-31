@@ -19,45 +19,11 @@
         main()
       })
 
-    function main() {
-      const times = [10, 20, 30];
+    async function main() {
+      const time = 30;
       const size = 30;
-      for (const time of times) {
-        testTime('js迭代', time, () => {
-          return fib(size)
-        })
-
-        testTime('go迭代', time, () => {
-          return goFib(size)
-        })
-        console.debug('')
-      }
-      for (const time of times) {
-        testTime('js递归', time, () => {
-          return fib2(size)
-        })
-
-        testTime('go递归', time, () => {
-          return goFib2(size)
-        })
-        console.debug('')
-      }
-      console.debug('结束')
-
-      let start = performance.now()
-      goFib3(size)
-      console.debug('go内部递归30次平均耗时', (performance.now() - start)/30)
-    
-      start = performance.now()
-      fib3(size)
-      console.debug('js内部递归30次平均耗时', (performance.now() - start)/30)
-
-      const len = 100000;
-      const time = 2000;
-      // list = genGar(time, len)
-      list = goGenGar(time, len);
-      console.debug(list)
-      console.debug(window.performance.memory)
+      testCase(time, size)
+      console.debug('--------------')
     }
     function testTime(title, time, cb) {
       let sum = 0;
@@ -67,6 +33,21 @@
         sum += performance.now() - start;
       }
       console.debug(`${title}，${time}次平均耗时${sum/time}毫秒`);
+    }
+    function testCase(time, size) {
+      testTime('js', time, () => {
+        return fib(size)
+      })
+      testTime('go', time, () => {
+        return goFib(size)
+      })
+      let start = performance.now()
+      goFib30Times(size)
+      console.debug('go，内部30次平均耗时', (performance.now() - start)/30)
+    
+      start = performance.now()
+      fib30Times(size)
+      console.debug('js，内部30次平均耗时', (performance.now() - start)/30)
     }
   </script>
 </body>

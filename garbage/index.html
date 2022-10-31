@@ -9,65 +9,30 @@
   <script src="./index.js"></script>
 </head>
 <body>
+  <button onClick="goGenGar()">go</button>
+  <button onClick="genGar()">js</button>
+  <button onClick="genGarForRust()">rust</button>
+  <button onClick="checkMemory()">check memory</button>
+
   <script>
     const go = new Go();
-    WebAssembly.instantiateStreaming(fetch("./main.wasm"), go.importObject)
-      .then((result) => {
-        const res = go.run(result.instance)
-        console.debug(res)
-      }).then(_ => {
-        main()
-      })
+    Promise.all([
+      WebAssembly.instantiateStreaming(fetch("./main.wasm"), go.importObject), 
+      import('./rust-wasm/pkg/rust_wasm.js')
+    ])
+    .then(async ([result, rustP]) => {
+      const res = go.run(result.instance)
+      await rustP.default()
+      main(rustP)
+    })
 
-    function main() {
-      const times = [10, 20, 30];
-      const size = 30;
-      for (const time of times) {
-        testTime('js迭代', time, () => {
-          return fib(size)
-        })
-
-        testTime('go迭代', time, () => {
-          return goFib(size)
-        })
-        console.debug('')
-      }
-      for (const time of times) {
-        testTime('js递归', time, () => {
-          return fib2(size)
-        })
-
-        testTime('go递归', time, () => {
-          return goFib2(size)
-        })
-        console.debug('')
-      }
-      console.debug('结束')
-
-      let start = performance.now()
-      goFib3(size)
-      console.debug('go内部递归30次平均耗时', (performance.now() - start)/30)
-    
-      start = performance.now()
-      fib3(size)
-      console.debug('js内部递归30次平均耗时', (performance.now() - start)/30)
-
-      const len = 100000;
-      const time = 2000;
-      // list = genGar(time, len)
-      list = goGenGar(time, len);
-      console.debug(list)
+    function main(rustP) {
+      window.genGarForRust = rustP.genGar;
+      checkMemory();
+    }
+    function checkMemory() {
       console.debug(window.performance.memory)
     }
-    function testTime(title, time, cb) {
-      let sum = 0;
-      for (let i = 0; i < time; i++) {
-        let start = performance.now()
-        cb();
-        sum += performance.now() - start;
-      }
-      console.debug(`${title}，${time}次平均耗时${sum/time}毫秒`);
-    }
-  </script>
+ </script>
 </body>
 </html>

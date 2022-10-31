@@ -1,0 +1,1 @@
+/Users/lujiajian/Desktop/web-assembly/garbage/rust-wasm/target/wasm32-unknown-unknown/release/librust_wasm.rlib: /Users/lujiajian/Desktop/web-assembly/garbage/rust-wasm/src/lib.rs /Users/lujiajian/Desktop/web-assembly/garbage/rust-wasm/src/utils.rs

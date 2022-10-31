@@ -5,7 +5,7 @@ WebAssembly （wasm）是一种新的编码方式，可以在现代的网络浏�
 ## js/webAssembly工作方式
 
 ![	](img/image-20221005170809780.png)
-<p style="text-align: center; color: red">js 即时编译流程(1)</p>
+<p style="text-align: center; color: red">v8 js 即时编译流程(1)</p>
 
 
 ​	<img src="./img/jsflow.png" alt="js" style="zoom:200%;" />
@@ -14,7 +14,7 @@ WebAssembly （wasm）是一种新的编码方式，可以在现代的网络浏�
 
 ![webassembly](img/webAssemblyflow.png)
 
-<p style="text-align: center; color: red">wasm 流程</p>
+<p style="text-align: center; color: red">wasm 流程(<a href='https://v8.dev/docs/wasm-compilation-pipeline'>[TurboFan也会参与WASM的优化]</a>)</p>
 
 ## 优点
 
@@ -41,7 +41,7 @@ chrome 版本 -- 105.0.5195.125（正式版本） (x86_64)
 
 + 大小上，同等作用的代码。wasm大小1.4M，js大小705B
 
-+ 速度上，同等作用的代码。wasm运行速度比js慢
++ 速度上，同等作用的代码。chrome下 wasm运行速度比js慢，safari下相反
 
 + 内存上，垃圾无法回收会导致内存占用大！如下：
   <div>
