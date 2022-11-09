@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"syscall/js"
 	"crypto/md5"
-	"net/http"
 )
 
 func fib(max int) int {
@@ -19,10 +18,11 @@ func fibWrapper(this js.Value, args []js.Value) any {
 }
 func fib30TimesWrapper(this js.Value, args []js.Value) any {
 	max := args[0].Int();
+	sum := 0
 	for i := 0; i < 30; i++ {
-		fib(max)
+		sum += fib(max)
 	}
-	return "end"
+	return sum
 }
 func calcMd5(this js.Value, args []js.Value) interface{} {
 	ret := fmt.Sprintf("%x", md5.Sum([]byte(args[0].String())))
