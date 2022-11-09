@@ -1,3 +1,3 @@
 function genGar() {
-  let list = Array(1000000).fill(null)
+  let list = Array(10000000).fill(null)
 }

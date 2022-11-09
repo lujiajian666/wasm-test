@@ -12,24 +12,27 @@
   <button onClick="goGenGar()">go</button>
   <button onClick="genGar()">js</button>
   <button onClick="genGarForRust()">rust</button>
+  <button onClick="genGarForC()">c</button>
   <button onClick="checkMemory()">check memory</button>
 
   <script>
     const go = new Go();
     Promise.all([
       WebAssembly.instantiateStreaming(fetch("./main.wasm"), go.importObject), 
-      import('./rust-wasm/pkg/rust_wasm.js')
+      import('./rust-wasm/pkg/rust_wasm.js'),
+      WebAssembly.instantiateStreaming(fetch('./emsdk/indexc.wasm')),
     ])
-    .then(async ([result, rustP]) => {
-      const res = go.run(result.instance)
-      await rustP.default()
-      main(rustP)
+    .then(async ([goWasmModule, rustWasmModule, cWasmModule]) => {
+      go.run(goWasmModule.instance)
+      await rustWasmModule.default()
+
+      window.genGarForRust = rustWasmModule.genGar;
+      window.genGarForC = cWasmModule.instance.exports.genGarbage
+      checkMemory();
+    }).catch(err => {
+      console.debug(err)
     })
 
-    function main(rustP) {
-      window.genGarForRust = rustP.genGar;
-      checkMemory();
-    }
     function checkMemory() {
       console.debug(window.performance.memory)
     }

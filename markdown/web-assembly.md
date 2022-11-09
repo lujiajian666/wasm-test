@@ -1,8 +1,8 @@
-## 	Introduce
+## 	1. Introduce
 
 WebAssembly is a new type of code that can be run in modern web browsers — it is a low-level assembly-like language with a compact binary format that runs with near-native performance and provides languages such as C/C++, C# and Rust with a compilation target so that they can run on the web. It is also designed to run alongside JavaScript, allowing both to work together. [MDN WebAssembly](https://developer.mozilla.org/en-US/docs/WebAssembly)
 
-## js/webAssembly workflow
+## 2.  Workflow - js/webAssembly
 
 ![	](img/image-20221005170809780.png)
 <p style="text-align: center; color: red"><a href='https://medium.com/dailyjs/understanding-v8s-bytecode-317d46c94775'>v8 js workflow(1)</a></p>
@@ -16,7 +16,7 @@ WebAssembly is a new type of code that can be run in modern web browsers — it 
 
 <p style="text-align: center; color: red">wasm workflow(<a href='https://v8.dev/docs/wasm-compilation-pipeline'>[TurboFan & WASM]</a>)</p>
 
-## Advantage
+## 3. Advantage
 
 - Smaller -- It takes less time to extract wasm because it is more compact than JavaScript even when compressed.
 - Faster
@@ -26,7 +26,7 @@ WebAssembly is a new type of code that can be run in modern web browsers — it 
   - Execution usually takes less time, because there are fewer compiler tricks and pitfalls developers need to know to write consistent high-performance code, and wasm's instruction set is more machine-friendly.
 - <span style="color: green">Step across FE and BE</span>
 
-## Usage
+## 4. Usage
 
 go version -- go1.19.3
 
@@ -34,7 +34,7 @@ chrome version -- 107.0.5304.87（正式版本） (x86_64)
 
 [demo](http://127.0.0.1:8000)
 
-## Analyze
+## 5. Analyze
 
 The actual running result, js performs better than wasm
 
@@ -43,21 +43,14 @@ The actual running result, js performs better than wasm
 + In terms of speed, the same code works. Wasm runs slower than js under chrome, but the opposite under safari
 
 + In memory, the inability to collect garbage will lead to a large memory footprint! as follows:
-  <div>
-  	<div style="display: inline-block; width: 50%">
-  		<img src="./img/gar-go.png" alt="image-20221006153052117" style="width: 100%" />
-  		<p style="width: 100%;color: red;text-align: center">wasm</p>
-  	</div><div style="display: inline-block; width: 50%">
-  		<img src="./img/gar-js.png" alt="image-20221006153116111" style="width:100%;" />
-  		<p style="width: 100%; color: red;text-align: center">js</p>
-  	</div>
-  </div>
   
-  
-  
-  
+  ![image-20221109000918680](/Users/jiajianlu/work/wasm-test/markdown/img/garbage.png)
 
-## 相关链接
+## 6.  Conclusion
+
+Wasm is not necessarily faster than javascript, but it can reuse code.
+
+## 7. Links
 
 [webassembly -- webassembly.org](https://webassembly.org/)
 

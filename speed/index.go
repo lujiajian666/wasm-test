@@ -1,7 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"syscall/js"
+	"crypto/md5"
+	"net/http"
 )
 
 func fib(max int) int {
@@ -21,6 +24,10 @@ func fib30TimesWrapper(this js.Value, args []js.Value) any {
 	}
 	return "end"
 }
+func calcMd5(this js.Value, args []js.Value) interface{} {
+	ret := fmt.Sprintf("%x", md5.Sum([]byte(args[0].String())))
+	return js.ValueOf(ret)
+}
 
 func main() {
 	alert := js.Global().Get("alert")
@@ -28,7 +35,8 @@ func main() {
 	// 提供模块
 	js.Global().Set("goFib", js.FuncOf(fibWrapper))
 	js.Global().Set("goFib30Times", js.FuncOf(fib30TimesWrapper))
-	
+	js.Global().Set("CalcMd5", js.FuncOf(calcMd5))
+
 	done := make(chan int, 0)
 	<-done
 }
