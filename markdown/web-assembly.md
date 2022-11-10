@@ -39,12 +39,8 @@ chrome version -- 107.0.5304.87（正式版本） (x86_64)
 The actual running result, js performs better than wasm
 
 + Size-wise, code that works equally well. wasm size 1.4M, js size 705B
-
-+ In terms of speed, the same code works. Wasm runs slower than js under chrome, but the opposite under safari
-
-+ In memory, the inability to collect garbage will lead to a large memory footprint! as follows:
-  
-  ![image-20221109000918680](/Users/jiajianlu/work/wasm-test/markdown/img/garbage.png)
++ In terms of speed, the same code works. Wasm of go runs slower than js under chrome, but the opposite under safari. Wasm of c is the most faster both on safari and chrome
++ In memory, the inability to collect garbage will lead to a large memory footprint! 
 
 ## 6.  Conclusion
 
@@ -52,8 +48,12 @@ Wasm is not necessarily faster than javascript, but it can reuse code.
 
 ## 7. Links
 
+[build wasm module with c -- akarin.dev](https://akarin.dev/2020/10/10/build-webassembly-module-with-c/)
+
 [webassembly -- webassembly.org](https://webassembly.org/)
 
 [go webassembly -- github.com](https://github.com/golang/go/wiki/WebAssembly)
 
 [syscall/js -- golang.org](https://pkg.go.dev/syscall/js)
+
+[https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html)
