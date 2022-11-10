@@ -1,64 +1,59 @@
-## 	介绍
+## 	1. Introduce
 
-WebAssembly （wasm）是一种新的编码方式，可以在现代的网络浏览器中运行 － 它是一种低级的类汇编语言，具有紧凑的二进制格式，可以接近原生的性能运行，并为诸如 C / C ++等语言提供一个编译目标，以便它们可以在 Web 上运行。它也被设计为可以与 JavaScript 共存，允许两者一起工作。 [MDN WebAssembly](https://developer.mozilla.org/zh-CN/docs/WebAssembly)
+WebAssembly is a new type of code that can be run in modern web browsers — it is a low-level assembly-like language with a compact binary format that runs with near-native performance and provides languages such as C/C++, C# and Rust with a compilation target so that they can run on the web. It is also designed to run alongside JavaScript, allowing both to work together. [MDN WebAssembly](https://developer.mozilla.org/en-US/docs/WebAssembly)
 
-## js/webAssembly工作方式
+## 2.  Workflow - js/webAssembly
 
 ![	](img/image-20221005170809780.png)
-<p style="text-align: center; color: red">v8 js 即时编译流程(1)</p>
+<p style="text-align: center; color: red"><a href='https://medium.com/dailyjs/understanding-v8s-bytecode-317d46c94775'>v8 js workflow(1)</a></p>
 
 
 ​	<img src="./img/jsflow.png" alt="js" style="zoom:200%;" />
 
-<p style="text-align: center; color: red">js即时编译流程(2)</p>
+<p style="text-align: center; color: red">v8 js workflow(2)</p>
 
 ![webassembly](img/webAssemblyflow.png)
 
-<p style="text-align: center; color: red">wasm 流程(<a href='https://v8.dev/docs/wasm-compilation-pipeline'>[TurboFan也会参与WASM的优化]</a>)</p>
+<p style="text-align: center; color: red">wasm workflow(<a href='https://v8.dev/docs/wasm-compilation-pipeline'>[TurboFan & WASM]</a>)</p>
 
-## 优点
+## 3. Advantage
 
-- 提取wasm所需的时间更少，因为即使压缩后，它也比JavaScript更紧凑。
-- 解码wasm所需的时间少于解析JavaScript所需的时间。
-  - 编译和优化所需的时间更少
-  - wasm比JavaScript更接近机器代码，并且已经在服务器端进行了优化。
-  - 不需要进行重新优化，因为wasm内置了类型和其他信息，因此JS引擎在优化JavaScript方式时无需推测。
-  - <span style="color: red">由于内存是手动管理的，因此不需要垃圾回收</span>
-- 执行通常会花费较少的时间，因为开发人员在编写一致的高性能代码时需要知道的编译器技巧和陷阱就更少了，另外wasm的指令集更适合机器。
-- <span style="color: green">后端可以提供模块，实现一部分功能</span>
+- Smaller -- It takes less time to extract wasm because it is more compact than JavaScript even when compressed.
+- Faster
+  - wasm is closer to machine code than JavaScript and has been optimized on the server side.
+  - No re-optimization is required, because wasm has types and other information built in, so the JS engine doesn't need to speculate when optimizing the way JavaScript is done.
+  - <span style="color: red">Garbage collection is not required since memory is managed manually</span>
+  - Execution usually takes less time, because there are fewer compiler tricks and pitfalls developers need to know to write consistent high-performance code, and wasm's instruction set is more machine-friendly.
+- <span style="color: green">Step across FE and BE</span>
 
-## 使用
+## 4. Usage
 
-go 版本 -- go1.19.2
+go version -- go1.19.3
 
-chrome 版本 -- 105.0.5195.125（正式版本） (x86_64)
+chrome version -- 107.0.5304.87（正式版本） (x86_64)
 
 [demo](http://127.0.0.1:8000)
 
-## 分析
+## 5. Analyze
 
-实际运行结果，js比wasm表现好
+The actual running result, js performs better than wasm
 
-+ 大小上，同等作用的代码。wasm大小1.4M，js大小705B
++ Size-wise, code that works equally well. wasm size 1.4M, js size 705B
++ In terms of speed, the same code works. Wasm of go runs slower than js under chrome, but the opposite under safari. Wasm of c is the most faster both on safari and chrome
++ In memory, the inability to collect garbage will lead to a large memory footprint! 
 
-+ 速度上，同等作用的代码。chrome下 wasm运行速度比js慢，safari下相反
+## 6.  Conclusion
 
-+ 内存上，垃圾无法回收会导致内存占用大！如下：
-  <div>
-  	<div style="display: inline-block; width: 50%">
-  		<img src="./img/gar-go.png" alt="image-20221006153052117" style="width: 100%" />
-  		<p style="width: 100%;color: red;text-align: center">wasm 产生垃圾后一段时间后的内存占用情况</p>
-  	</div><div style="display: inline-block; width: 50%">
-  		<img src="./img/gar-js.png" alt="image-20221006153116111" style="width:100%;" />
-  		<p style="width: 100%; color: red;text-align: center">js 产生垃圾后一段时间后的内存占用情况</p>
-  	</div>
-  </div>
-  
-  
-  
+Wasm is not necessarily faster than javascript, but it can reuse code.
 
-## 相关链接
+## 7. Links
 
-[go webassembly 文档 -- github.com](https://github.com/golang/go/wiki/WebAssembly)
+[build wasm module with c -- akarin.dev](https://akarin.dev/2020/10/10/build-webassembly-module-with-c/)
 
-[syscall/js 官方文档 -- golang.org](https://pkg.go.dev/syscall/js)
+[webassembly -- webassembly.org](https://webassembly.org/)
+
+[go webassembly -- github.com](https://github.com/golang/go/wiki/WebAssembly)
+
+[syscall/js -- golang.org](https://pkg.go.dev/syscall/js)
+
+[https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html)

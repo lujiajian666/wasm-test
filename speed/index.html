@@ -11,20 +11,25 @@
 <body>
   <script>
     const go = new Go();
-    WebAssembly.instantiateStreaming(fetch("./main.wasm"), go.importObject)
-      .then((result) => {
-        const res = go.run(result.instance)
-        console.debug(res)
-      }).then(_ => {
-        main()
-      })
+    let cFib
+    let cFib30Times
+    Promise.all([
+      WebAssembly.instantiateStreaming(fetch("./main.wasm"), go.importObject),
+      WebAssembly.instantiateStreaming(fetch("./emsdk/indexc.wasm"))
+    ])
+      .then(([goWasm, cWasm]) => {
+        go.run(goWasm.instance)
+        cFib = cWasm.instance.exports.fib
+        cFib30Times = cWasm.instance.exports.cFib30Times
 
-    async function main() {
-      const time = 30;
-      const size = 30;
-      testCase(time, size)
-      console.debug('--------------')
-    }
+        const time = 30;
+        const size = 30;
+        testCase(time, size)
+        console.debug('--------------')
+        console.debug(CalcMd5('路甲减'))
+      }).catch(err => {
+        console.debug(err)
+      })
     function testTime(title, time, cb) {
       let sum = 0;
       for (let i = 0; i < time; i++) {
@@ -41,14 +46,22 @@
       testTime('go', time, () => {
         return goFib(size)
       })
+      testTime('c', time, () => {
+        return cFib(size)
+      })
       let start = performance.now()
-      goFib30Times(size)
-      console.debug('go，内部30次平均耗时', (performance.now() - start)/30)
+      const sum1 = goFib30Times(size)
+      console.debug('go，内部30次平均耗时', (performance.now() - start)/30, sum1)
     
       start = performance.now()
-      fib30Times(size)
-      console.debug('js，内部30次平均耗时', (performance.now() - start)/30)
+      const sum2 = fib30Times(size)
+      console.debug('js，内部30次平均耗时', (performance.now() - start)/30, sum2)
+
+      start = performance.now()
+      const sum3 = cFib30Times(size)
+      console.debug('c，内部30次平均耗时', (performance.now() - start)/30, sum3)
     }
+
   </script>
 </body>
 </html>

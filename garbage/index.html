@@ -7,31 +7,61 @@
   <title>web assembly</title>
   <script src="./wasm_exec.js"></script>
   <script src="./index.js"></script>
+  <script src="./emsdk/a.out.js"></script>
 </head>
 <body>
-  <button onClick="goGenGar()">go</button>
-  <button onClick="genGar()">js</button>
-  <button onClick="genGarForRust()">rust</button>
+  <button onClick="log(goGenGar)">go</button>
+  <button onClick="log(genGar)">js</button>
+  <button onClick="log(genGarForRust)">rust</button>
+  <button onClick="log(genGarForC)">c</button>
+  <button onClick="log(genGarForC2)">c-2</button>
   <button onClick="checkMemory()">check memory</button>
 
   <script>
     const go = new Go();
     Promise.all([
       WebAssembly.instantiateStreaming(fetch("./main.wasm"), go.importObject), 
-      import('./rust-wasm/pkg/rust_wasm.js')
+      import('./rust-wasm/pkg/rust_wasm.js'),
+      WebAssembly.instantiateStreaming(fetch('./emsdk/indexc.wasm'), {
+        env: {
+          memset: function(...a) {
+            console.debug(a)
+          },
+          memory: new WebAssembly.Memory({ initial: 1 }),
+          printf: function (a, b) {
+            console.debug(a, b)
+          },
+          __memory_base: 0,
+          __stack_pointer: new WebAssembly.Global(
+            {
+                mutable: true,
+                value: 'i32',
+            },
+            0x1000,
+        ),
+        }
+      }),
     ])
-    .then(async ([result, rustP]) => {
-      const res = go.run(result.instance)
-      await rustP.default()
-      main(rustP)
-    })
+    .then(async ([goWasmModule, rustWasmModule, cWasmModule]) => {
+      go.run(goWasmModule.instance)
+      await rustWasmModule.default()
 
-    function main(rustP) {
-      window.genGarForRust = rustP.genGar;
+      window.genGarForRust = rustWasmModule.genGar;
+      window.genGarForC = cWasmModule.instance.exports.genGarbage
+      
       checkMemory();
-    }
+    }).catch(err => {
+      console.debug(err)
+    })
+    Module.onRuntimeInitialized = () => {
+      window.genGarForC2 = Module.cwrap('genGarbage', null, null, null);
+    };
+
     function checkMemory() {
       console.debug(window.performance.memory)
+    }
+    function log(fn) {
+      console.debug(fn())
     }
  </script>
 </body>

@@ -5,9 +5,9 @@ import (
 )
 
 func generateGarbage(this js.Value, args []js.Value) any {
-	list := make([]interface{}, 1000000);
+	list := make([]interface{}, 10000000);
 	// js.Global().Set("list", js.ValueOf(list))
-	return list
+	return len(list)
 }
 
 func main() {
